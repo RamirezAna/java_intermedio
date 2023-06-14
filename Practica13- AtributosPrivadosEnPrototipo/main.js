@@ -42,13 +42,55 @@ function deepCopy(subject) {
 }
 
  
+/*metodo statico */
 
-// esta funcion sirve para poder decir a una variale 
-// que es obligatorio
+ 
+function SuperObject() {}
+SuperObject.isObject = function(subject) {
+    return typeof subject == "object"; //para saber si el valor que pasamos es un objeto
+}
+SuperObject.deepCopy = function(subject) {
+    return typeof subject == "object"; //para saber si el valor que pasamos es un objeto
+ 
+    let copySubject;
+
+    const subjectIsArray = isArray(subject);
+    const subjectIsObject = isObject(subject);
+
+    if (subjectIsArray) {
+        copySubject = [];
+    } else
+        if (subjectIsObject) {
+            copySubject = {};
+        } else {
+            return subject;
+        }
+
+    //recursividad
+    for (key in subject) {
+        const keyIsObject = isObject(subject[key]);
+
+        if (keyIsObject) {
+            copySubject[key] = deepCopy(subject[key]);
+        } else {
+            if (subjectIsArray) {
+                copySubject.push(subject[key])
+            }
+            else {
+                copySubject[key] = subject[key];
+            }
+        }
+    }
+
+    return copySubject;
+}
+
+
 function requiredParam(param) {
     throw new Error(param + " este parametro es obligatorio!!");
 }
 
+ 
 
 //funcion
 function createLearningPaths({
@@ -56,32 +98,7 @@ function createLearningPaths({
     courses = [],
 }){
     this.name = name;
-    this.courses = courses;    
-
-    // const private ={
-    //     "_name": name,
-    //     "_courses": courses,
-    // };
-    
-    // const public ={
-    //     get name(){
-    //         return private["_name"];
-    //      },
- 
-    //      set name(newName){
-    //          if(newName.length != 0){
-    //              private["_name"] = newName; 
-    //          }else{
-    //              console.warn("name no es valido");
-    //          }
-    //      },
-
-    //      get courses(){
-    //         return private["_courses"];
-    //      },  
-    // };
-
-    // return public;
+    this.courses = courses;         
 }
 
 function Student({
@@ -119,7 +136,7 @@ function Student({
                 }else{
                     console.warn("Alguno de los LP no es un instancia de learnigPath");
                 }
-            }
+            }, 
         },
     );
 
